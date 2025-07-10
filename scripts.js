@@ -65,6 +65,94 @@ function renderOrder() {
     `;
 }
 
+function showCardDetails() {
+    const totalPrice = order.reduce((total, item) => total + item.price, 0);
+    
+    const modalHtml = `
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Enter Card Details</h2>
+                    <button class="close-btn">×</button>
+                </div>
+                <form class="card-form">
+                    <div class="form-group">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiry">Expiry Date</label>
+                            <input type="text" id="expiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="text" id="cvv" placeholder="123" required>
+                        </div>
+                    </div>
+                    <div class="form-total">
+                        <strong>Total: $${totalPrice}</strong>
+                    </div>
+                    <button type="submit" class="pay-btn">Pay Now</button>
+                </form>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Add event listeners to the modal
+    const modal = document.querySelector('.modal-overlay');
+    const closeBtn = document.querySelector('.close-btn');
+    const form = document.querySelector('.card-form');
+    
+    // Close modal when clicking overlay
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeCardDetails();
+        }
+    });
+    
+    // Close modal when clicking close button
+    closeBtn.addEventListener('click', closeCardDetails);
+    
+    // Handle form submission
+    form.addEventListener('submit', processPayment);
+}
+
+function closeCardDetails() {
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+function processPayment(event) {
+    event.preventDefault();
+    const name = document.getElementById('card-name').value;
+    
+    if (name.trim() === '') {
+        alert('Please enter your name');
+        return;
+    }
+    
+    // Show thank you message in the order container
+    orderContainer.innerHTML = `
+        <div class="thank-you-message">
+            <h2>Thanks ${name}!</h2>
+            <p>Your order is on its way!</p>
+        </div>
+    `;
+    
+    // Reset order and close modal
+    order = [];
+    closeCardDetails();
+}
+
 // Event delegation - listen for clicks on the menu container
 menuFeed.addEventListener('click', function(e) {
     if (e.target.closest('.btn')) {
@@ -75,6 +163,13 @@ menuFeed.addEventListener('click', function(e) {
             order.push(selectedDish);
             renderOrder();
         }
+    }
+});
+
+// Event delegation - listen for clicks on the order container
+orderContainer.addEventListener('click', function(e) {
+    if (e.target.classList.contains('complete-order-btn')) {
+        showCardDetails();
     }
 });
 
