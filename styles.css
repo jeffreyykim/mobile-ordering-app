@@ -122,14 +122,6 @@ main {
     margin-left: auto;
 }
 
-.dish .add-btn button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding-right: 40px;
-    display: flex;
-}
-
 footer {
     background-color: #FFF;
     width: 100%;

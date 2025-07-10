@@ -153,6 +153,7 @@ function processPayment(event) {
     closeCardDetails();
 }
 
+
 // Event delegation - listen for clicks on the menu container
 menuFeed.addEventListener('click', function(e) {
     if (e.target.closest('.btn')) {
